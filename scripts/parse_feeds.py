@@ -5,6 +5,9 @@ from datetime import datetime, timezone
 FEEDS = {"Oborot.ru": "feeds/oborot.xml", "Retail.ru": "feeds/retail.xml"}
 out = {"updated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"), "feeds": {}}
 
+def local(tag):
+    return tag.rsplit("}", 1)[-1]
+
 def clean(s):
     s = re.sub(r"<[^>]+>", " ", s or "")
     return re.sub(r"\s+", " ", html.unescape(s)).strip()
@@ -13,13 +16,16 @@ for name, path in FEEDS.items():
     try:
         root = ET.parse(path).getroot()
         items = []
-        for it in root.iter("item"):
-            full = it.findtext("{http://purl.org/rss/1.0/modules/content/}encoded") or it.findtext("{http://www.yandex.ru}full-text")
+        for it in (e for e in root.iter() if local(e.tag) == "item"):
+            f = {}
+            for c in it:
+                f.setdefault(local(c.tag), c.text or "")
+            full = f.get("encoded") or f.get("full-text")
             items.append({
-                "title": clean(it.findtext("title")),
-                "link": (it.findtext("link") or "").strip(),
-                "date": (it.findtext("pubDate") or "").strip(),
-                "description": clean(it.findtext("description"))[:1500],
+                "title": clean(f.get("title")),
+                "link": (f.get("link") or "").strip(),
+                "date": (f.get("pubDate") or "").strip(),
+                "description": clean(f.get("description"))[:1500],
                 "full_text": clean(full)[:6000] if full else "",
             })
             if len(items) >= 20:
