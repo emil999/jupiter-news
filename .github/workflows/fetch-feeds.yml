@@ -1,0 +1,36 @@
+name: Fetch RSS feeds
+
+on:
+  schedule:
+    - cron: "15 */2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-feeds
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download feeds
+        run: |
+          mkdir -p feeds
+          UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"
+          curl -fsSL --max-time 60 -A "$UA" https://oborot.ru/rss/ -o feeds/oborot.xml || echo "oborot failed"
+          curl -fsSL --max-time 60 -A "$UA" https://www.retail.ru/rss/news/ -o feeds/retail.xml || echo "retail failed"
+          ls -la feeds
+      - name: Parse
+        run: python3 scripts/parse_feeds.py
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add feeds
+          git diff --cached --quiet && exit 0
+          git commit -m "Обновление RSS-лент"
+          for i in 1 2 3; do git pull --rebase origin main && git push origin main && break; sleep 5; done
