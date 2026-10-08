@@ -31,4 +31,6 @@ GitHub Action `.github/workflows/fetch-feeds.yml` каждые 2 часа ска
 
 GitHub Action `.github/workflows/instagram.yml` в 9:20, 9:50, 17:20 и 17:50 МСК берёт самый старый пост из очереди (не старше 48 часов), который уже вышел в Telegram. Признак выхода — квадратная обложка `https://jupiteragency.ru/covers/<id>-square.jpg`, которую рисует хостинг. Скрипт `scripts/instagram_publish.py` копирует обложку в `ig/` (серверы Meta могут не достучаться до российского хостинга) и публикует пост через Instagram Graph API. Опубликованное отмечается в `instagram_posted.json`.
 
-Нужны секреты репозитория `IG_USER_ID` и `IG_ACCESS_TOKEN` (ключ страницы Facebook, к которой привязан Instagram). Пока их нет, Action ничего не делает. Ключи в лог не выводятся.
+Нужны секреты репозитория `IG_USER_ID` и `IG_ACCESS_TOKEN`. Пока их нет, Action ничего не делает. Ключи в лог не выводятся.
+
+Используется вход через Instagram: переменная репозитория `IG_API_HOST` = `graph.instagram.com`. Такой ключ живёт 60 дней, поэтому `.github/workflows/instagram-token-refresh.yml` каждый понедельник продлевает его и записывает в `IG_ACCESS_TOKEN`. Для этого нужен секрет `GH_SECRETS_TOKEN` — fine-grained токен GitHub с правом «Secrets: Read and write» только на этот репозиторий. Если вместо этого использовать ключ страницы Facebook (переменная `IG_API_HOST` не задана), он бессрочный и продление не нужно.

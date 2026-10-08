@@ -1,0 +1,54 @@
+name: Refresh Instagram token
+
+# Ключ Instagram (вход через Instagram) живёт 60 дней. Раз в неделю продлеваем
+# его и записываем новый в секрет IG_ACCESS_TOKEN. Нужен секрет GH_SECRETS_TOKEN —
+# fine-grained токен GitHub с правом «Secrets: Read and write» на этот репозиторий.
+# Ключи в лог не выводятся.
+on:
+  schedule:
+    - cron: "17 3 * * 1"   # понедельник, 6:17 МСК
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Refresh and save token
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_API_HOST: ${{ vars.IG_API_HOST }}
+          GH_TOKEN: ${{ secrets.GH_SECRETS_TOKEN }}
+        run: |
+          if [ "$IG_API_HOST" != "graph.instagram.com" ]; then
+            echo "Используется ключ страницы Facebook — он бессрочный, продлевать не нужно."; exit 0
+          fi
+          if [ -z "$IG_ACCESS_TOKEN" ] || [ -z "$GH_TOKEN" ]; then
+            echo "Нет секретов IG_ACCESS_TOKEN или GH_SECRETS_TOKEN — пропускаю."; exit 0
+          fi
+          python3 - <<'EOF'
+          import json, os, sys, urllib.error, urllib.parse, urllib.request
+          url = "https://graph.instagram.com/refresh_access_token?" + urllib.parse.urlencode(
+              {"grant_type": "ig_refresh_token", "access_token": os.environ["IG_ACCESS_TOKEN"]})
+          try:
+              with urllib.request.urlopen(url, timeout=60) as r:
+                  data = json.load(r)
+          except urllib.error.HTTPError as e:
+              err = json.loads(e.read() or b"{}").get("error", {})
+              print("Instagram не продлил ключ:", err.get("message", e.code))
+              sys.exit(1)
+          except Exception as e:  # сеть; подробности не печатаем, чтобы ключ не попал в лог
+              print("Ошибка соединения с Instagram:", type(e).__name__)
+              sys.exit(1)
+          token = data.get("access_token")
+          if not token:
+              print("В ответе нет нового ключа."); sys.exit(1)
+          with open(os.path.join(os.environ["RUNNER_TEMP"], "ig_token"), "w") as f:
+              f.write(token)
+          print("Ключ продлён ещё на", int(data.get("expires_in", 0)) // 86400, "дн.")
+          EOF
+          gh secret set IG_ACCESS_TOKEN -R "$GITHUB_REPOSITORY" < "$RUNNER_TEMP/ig_token"
+          rm -f "$RUNNER_TEMP/ig_token"
+          echo "Новый ключ сохранён в секрет IG_ACCESS_TOKEN."
