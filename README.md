@@ -26,3 +26,9 @@
 ## Ленты новостей
 
 GitHub Action `.github/workflows/fetch-feeds.yml` каждые 2 часа скачивает RSS Oborot.ru и Retail.ru в `feeds/` и собирает `feeds/latest.json` (заголовок, ссылка, дата, описание, текст, если он есть в ленте). Задача по расписанию берёт новости оттуда, без запросов доступа к сайтам.
+
+## Instagram
+
+GitHub Action `.github/workflows/instagram.yml` в 9:20, 9:50, 17:20 и 17:50 МСК берёт самый старый пост из очереди (не старше 48 часов), который уже вышел в Telegram. Признак выхода — квадратная обложка `https://jupiteragency.ru/covers/<id>-square.jpg`, которую рисует хостинг. Скрипт `scripts/instagram_publish.py` копирует обложку в `ig/` (серверы Meta могут не достучаться до российского хостинга) и публикует пост через Instagram Graph API. Опубликованное отмечается в `instagram_posted.json`.
+
+Нужны секреты репозитория `IG_USER_ID` и `IG_ACCESS_TOKEN` (ключ страницы Facebook, к которой привязан Instagram). Пока их нет, Action ничего не делает. Ключи в лог не выводятся.

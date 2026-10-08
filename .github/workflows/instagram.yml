@@ -1,0 +1,36 @@
+name: Publish to Instagram
+
+# 9:20, 9:50, 17:20, 17:50 по Москве — после публикации в Telegram (9:00 и 17:00).
+# GitHub иногда запускает расписание с опозданием, повторные запуски это страхуют.
+on:
+  schedule:
+    - cron: "20,50 6,14 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: instagram
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publish next post
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          GRAPH_API_VERSION: ${{ vars.GRAPH_API_VERSION }}
+        run: python3 scripts/instagram_publish.py
+      - name: Save published list
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          [ -f instagram_posted.json ] || exit 0
+          git add instagram_posted.json
+          git diff --cached --quiet && exit 0
+          git commit -m "Instagram: опубликован пост"
+          for i in 1 2 3; do git pull --rebase origin main && git push origin main && break; sleep 5; done
