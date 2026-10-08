@@ -10,7 +10,8 @@
 Опубликованные id записываются в instagram_posted.json.
 
 Секреты репозитория: IG_USER_ID, IG_ACCESS_TOKEN (ключ страницы Facebook,
-к которой привязан Instagram). Переменная GRAPH_API_VERSION — по желанию.
+к которой привязан Instagram). Переменные GRAPH_API_VERSION (по умолчанию
+v25.0) и IG_API_HOST — по желанию.
 Ключи никогда не печатаются в лог: логи публичного репозитория видны всем.
 """
 import json, os, re, subprocess, sys, time, urllib.error, urllib.parse, urllib.request
@@ -26,8 +27,11 @@ UA = "JupiterInstagramPublisher/1.0 (+https://jupiteragency.ru)"
 
 
 def graph_base():
-    v = os.environ.get("GRAPH_API_VERSION", "").strip()
-    return "https://graph.facebook.com/" + (v + "/" if v else "")
+    # Facebook Login (ключ страницы) — graph.facebook.com.
+    # Для Instagram Login можно задать переменную IG_API_HOST=graph.instagram.com.
+    host = os.environ.get("IG_API_HOST", "").strip() or "graph.facebook.com"
+    v = os.environ.get("GRAPH_API_VERSION", "").strip() or "v25.0"
+    return f"https://{host}/{v}/"
 
 
 def http(method, url, data=None, timeout=60, raw=False):
@@ -157,7 +161,9 @@ def main():
     creation_id = json.loads(body)["id"]
 
     # Instagram скачивает картинку не мгновенно — ждём готовности
-    for _ in range(12):
+    # (документация Meta советует опрашивать не чаще раза в минуту и не дольше 5 минут)
+    for attempt in range(6):
+        time.sleep(10 if attempt == 0 else 60)
         status, body = http("GET", f"{base}{creation_id}?" + urllib.parse.urlencode(
             {"fields": "status_code", "access_token": token}))
         code = json.loads(body).get("status_code") if status == 200 else None
@@ -166,7 +172,6 @@ def main():
         if code in ("ERROR", "EXPIRED"):
             print("Instagram не принял картинку:", code)
             return 1
-        time.sleep(5)
 
     status, body = http("POST", f"{base}{ig_user}/media_publish",
                         {"creation_id": creation_id, "access_token": token})
