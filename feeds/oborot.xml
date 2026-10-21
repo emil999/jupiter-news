@@ -12,12 +12,48 @@
 	<atom:link href="https://oborot.ru/feed/" rel="self" type="application/rss+xml" />
 	<link>https://oborot.ru</link>
 	<description>об электронной торговле - для интернет-магазинов и ритейла. портал и сообщество</description>
-	<lastBuildDate>Wed, 21 Oct 2026 07:23:24 +0000</lastBuildDate>
+	<lastBuildDate>Wed, 21 Oct 2026 12:21:08 +0000</lastBuildDate>
 	<language>ru-RU</language>
 	<sy:updatePeriod>hourly</sy:updatePeriod>
 	<sy:updateFrequency>1</sy:updateFrequency>
 	<generator>https://wordpress.org/?v=4.4.23</generator>
 	<item>
+		<title>На Wildberries теперь можно оставлять отзывы на товары голосом</title>
+		<link>https://oborot.ru/news/na-wildberries-teper-mozhno-ostavlyat-otzyvy-na-tovary-golosom-i281907.html?utm_source=rss&#038;utm_medium=subscr&#038;utm_campaign=rss_infolenta_rss</link>
+		<pubDate>Wed, 21 Oct 2026 11:17:35 +0000</pubDate>
+		<dc:creator><![CDATA[]]></dc:creator>
+				<category><![CDATA[Маркетинг на маркетплейсах]]></category>
+		<category><![CDATA[Оргвопросы работы с маркетплейсами]]></category>
+		<category><![CDATA[Российские тенденции]]></category>
+		<category><![CDATA[Сайт и приложение]]></category>
+		<category><![CDATA[Wildberries]]></category>
+		<category><![CDATA[голосовой интерфейс]]></category>
+		<category><![CDATA[отзывы]]></category>
+
+		<guid isPermaLink="false">https://oborot.ru/news/na-wildberries-teper-mozhno-ostavlyat-otzyvy-na-tovary-golosom-i281907.html?utm_source=rss&#038;utm_medium=subscr&#038;utm_campaign=rss_infolenta_rss</guid>
+		<description><![CDATA[<img src="https://oborot.ru/wp-content/uploads/2026/10/vbotzyv1-1024x512.jpg" alt="image"  align="left"/>Маркетплейс внедрил в свое мобильное приложение функцию автоматического перевода аудиозаписей в текст при написании отзывов. Сервис работает на основе технологии распознавания речи: система переводит голос в текст в реальном времени, сохраняя смысл и структуру сказанного]]></description>
+				<content:encoded><![CDATA[<img src="https://oborot.ru/wp-content/uploads/2026/10/vbotzyv1-1024x512.jpg" alt="image"  align="left"/>Маркетплейс внедрил в свое мобильное приложение функцию автоматического перевода аудиозаписей в текст при написании отзывов. Сервис работает на основе технологии распознавания речи: система переводит голос в текст в реальном времени, сохраняя смысл и структуру сказанного]]></content:encoded>
+			</item>
+		<item>
+		<title>Хакеры могут получить доступ к складским IT-системам через беспроводные сканеры штрихкодов</title>
+		<link>https://oborot.ru/news/hakery-mogut-poluchit-dostup-k-skladskim-it-sistemam-cherez-besprovodnye-skanery-shtrihkodov-i281882.html?utm_source=rss&#038;utm_medium=subscr&#038;utm_campaign=rss_infolenta_rss</link>
+		<pubDate>Wed, 21 Oct 2026 09:37:15 +0000</pubDate>
+		<dc:creator><![CDATA[]]></dc:creator>
+				<category><![CDATA[Безопасность]]></category>
+		<category><![CDATA[Доставка и логистика]]></category>
+		<category><![CDATA[Логистика для маркетплейсов]]></category>
+		<category><![CDATA[взлом]]></category>
+		<category><![CDATA[злоумышленники]]></category>
+		<category><![CDATA[Лаборатория Касперского]]></category>
+		<category><![CDATA[уязвимость]]></category>
+		<category><![CDATA[хакеры]]></category>
+		<category><![CDATA[штрихкоды]]></category>
+
+		<guid isPermaLink="false">https://oborot.ru/news/hakery-mogut-poluchit-dostup-k-skladskim-it-sistemam-cherez-besprovodnye-skanery-shtrihkodov-i281882.html?utm_source=rss&#038;utm_medium=subscr&#038;utm_campaign=rss_infolenta_rss</guid>
+		<description><![CDATA[<img src="https://oborot.ru/wp-content/uploads/2026/10/kiberataka-v-logisticheskom-centre-1024x512.png" alt="image"  align="left"/>Проблема связана с отсутствием аутентификации между сканером и базовой станцией, к которой он подключен. Этим могут воспользоваться злоумышленники, чтобы установить соединение с устройством и передать вредоносные команды]]></description>
+				<content:encoded><![CDATA[<img src="https://oborot.ru/wp-content/uploads/2026/10/kiberataka-v-logisticheskom-centre-1024x512.png" alt="image"  align="left"/>Проблема связана с отсутствием аутентификации между сканером и базовой станцией, к которой он подключен. Этим могут воспользоваться злоумышленники, чтобы установить соединение с устройством и передать вредоносные команды]]></content:encoded>
+			</item>
+		<item>
 		<title>Faberlic спустя 29 лет выходит в традиционную розницу и на маркетплейсы</title>
 		<link>https://oborot.ru/news/faberlic-spustya-29-let-vyhodit-v-tradicionnuyu-roznicu-i-na-marketplejsy-i281874.html?utm_source=rss&#038;utm_medium=subscr&#038;utm_campaign=rss_infolenta_rss</link>
 		<pubDate>Wed, 21 Oct 2026 07:08:40 +0000</pubDate>
@@ -391,34 +427,6 @@
 		<guid isPermaLink="false">https://oborot.ru/news/itogi-vtorogo-dnya-elektronnoj-torgovli-2026-antikrizisnaya-ustojchivost-i-diversifikaciya-riskov-i281667.html?utm_source=rss&#038;utm_medium=subscr&#038;utm_campaign=rss_infolenta_rss</guid>
 		<description><![CDATA[<img src="https://oborot.ru/wp-content/uploads/2026/10/dsc_7982-1024x512.jpg" alt="image"  align="left"/>Честные цифры топ-селлеров, тренды рынка в условиях "экономики тревожности", реальные кейсы внедрения ИИ в командах и вручение премии "Большой Оборот".]]></description>
 				<content:encoded><![CDATA[<img src="https://oborot.ru/wp-content/uploads/2026/10/dsc_7982-1024x512.jpg" alt="image"  align="left"/>Честные цифры топ-селлеров, тренды рынка в условиях "экономики тревожности", реальные кейсы внедрения ИИ в командах и вручение премии "Большой Оборот".]]></content:encoded>
-			</item>
-		<item>
-		<title>&quot;Вкусно – и точка&quot; тестирует выдачу заказов через постамат. Как это работает?</title>
-		<link>https://oborot.ru/news/vkusno-i-tochka-testiruet-vydachu-zakazov-cherez-postamat-kak-eto-rabotaet-i281685.html?utm_source=rss&#038;utm_medium=subscr&#038;utm_campaign=rss_infolenta_rss</link>
-		<pubDate>Fri, 16 Oct 2026 14:11:41 +0000</pubDate>
-		<dc:creator><![CDATA[]]></dc:creator>
-				<category><![CDATA[Доставка и логистика]]></category>
-		<category><![CDATA[Российские тенденции]]></category>
-
-		<guid isPermaLink="false">https://oborot.ru/news/vkusno-i-tochka-testiruet-vydachu-zakazov-cherez-postamat-kak-eto-rabotaet-i281685.html?utm_source=rss&#038;utm_medium=subscr&#038;utm_campaign=rss_infolenta_rss</guid>
-		<description><![CDATA[<img src="https://oborot.ru/wp-content/uploads/2026/10/vkusno-i-vydalllll-931x512.jpg" alt="image"  align="left"/>В эксперименте участвуют только определенные адреса — их на карте обозначат специальной меткой и пока таких заведений всего два. Нужно заранее оплатить покупку в приложении, после чего забрать его из специальной ячейки по QR-коду. Он придет, когда заказ будет готов]]></description>
-				<content:encoded><![CDATA[<img src="https://oborot.ru/wp-content/uploads/2026/10/vkusno-i-vydalllll-931x512.jpg" alt="image"  align="left"/>В эксперименте участвуют только определенные адреса — их на карте обозначат специальной меткой и пока таких заведений всего два. Нужно заранее оплатить покупку в приложении, после чего забрать его из специальной ячейки по QR-коду. Он придет, когда заказ будет готов]]></content:encoded>
-			</item>
-		<item>
-		<title>Селлеры говорят, что Wildberries задерживает выплаты, а WB Банк считает это их коммерческими рисками</title>
-		<link>https://oborot.ru/news/sellery-govoryat-chto-wildberries-zaderzhivaet-vyplaty-a-wb-bank-schitaet-eto-ih-kommercheskimi-riskami-i281638.html?utm_source=rss&#038;utm_medium=subscr&#038;utm_campaign=rss_infolenta_rss</link>
-		<pubDate>Fri, 16 Oct 2026 09:45:13 +0000</pubDate>
-		<dc:creator><![CDATA[]]></dc:creator>
-				<category><![CDATA[Оргвопросы работы с маркетплейсами]]></category>
-		<category><![CDATA[Российские тенденции]]></category>
-		<category><![CDATA[WB банк]]></category>
-		<category><![CDATA[Wildberries]]></category>
-		<category><![CDATA[Вайлдберриз банк]]></category>
-		<category><![CDATA[Вайлдберриз не платит]]></category>
-
-		<guid isPermaLink="false">https://oborot.ru/news/sellery-govoryat-chto-wildberries-zaderzhivaet-vyplaty-a-wb-bank-schitaet-eto-ih-kommercheskimi-riskami-i281638.html?utm_source=rss&#038;utm_medium=subscr&#038;utm_campaign=rss_infolenta_rss</guid>
-		<description><![CDATA[<img src="https://oborot.ru/wp-content/uploads/2026/10/vbpljuskov8-1024x512.jpg" alt="image"  align="left"/>Получается, что задержка выплат по вине маркетплейса - это коммерческий риск селлера, а просрочка платежа продавца перед дочерними структурами того же маркетплейса - уже вопиющее нарушение обязательств, которое не связано с первым обстоятельством]]></description>
-				<content:encoded><![CDATA[<img src="https://oborot.ru/wp-content/uploads/2026/10/vbpljuskov8-1024x512.jpg" alt="image"  align="left"/>Получается, что задержка выплат по вине маркетплейса - это коммерческий риск селлера, а просрочка платежа продавца перед дочерними структурами того же маркетплейса - уже вопиющее нарушение обязательств, которое не связано с первым обстоятельством]]></content:encoded>
 			</item>
 	</channel>
 </rss>
