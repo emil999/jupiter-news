@@ -156,7 +156,7 @@ def main():
     status, body = http("POST", f"{base}{ig_user}/media",
                         {"image_url": image_url, "caption": caption(post), "access_token": token})
     if status != 200:
-        print("Не удалось создать публикацию:", graph_error(body))
+        print("::error::Не удалось создать публикацию: " + graph_error(body))
         return 1
     creation_id = json.loads(body)["id"]
 
@@ -170,13 +170,13 @@ def main():
         if code == "FINISHED":
             break
         if code in ("ERROR", "EXPIRED"):
-            print("Instagram не принял картинку:", code)
+            print("::error::Instagram не принял картинку: " + str(code))
             return 1
 
     status, body = http("POST", f"{base}{ig_user}/media_publish",
                         {"creation_id": creation_id, "access_token": token})
     if status != 200:
-        print("Не удалось опубликовать:", graph_error(body))
+        print("::error::Не удалось опубликовать: " + graph_error(body))
         return 1
 
     posted.append(post["id"])
