@@ -51,7 +51,9 @@ def main():
         time.sleep(5)
     caption = f"{nxt['caption']}\n\n{BOT_CTA}\n\nНовости для селлеров каждый день — в Telegram-канале @jupiteragency\n\n{TAGS}"
     st, body = http("POST", f"{base}{ig_user}/media", {"media_type": "REELS", "video_url": video_url,
-                    "caption": caption[:2200], "share_to_feed": "true", "access_token": token})
+                    "caption": caption[:2200], "share_to_feed": "true",
+                    # обложка — кадр на 2,8 с, когда заголовок уже полностью на экране
+                    "thumb_offset": "2800", "access_token": token})
     if st != 200:
         print("::error::Не удалось создать Reels: " + graph_error(body)); return 1
     cid = json.loads(body)["id"]
