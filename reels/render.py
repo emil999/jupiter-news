@@ -12,7 +12,7 @@ from music import make_track
 HERE = os.path.dirname(os.path.abspath(__file__))
 ASSETS = os.path.join(HERE, "assets")
 FPS, TOTAL = 30, 30.0
-BOT = "@jupiteragency_bot"
+CHANNEL = "@jupiteragency"
 e = lambda s: html.escape(str(s))
 
 
@@ -49,10 +49,10 @@ def scene_html(s, t0, t1):
         mb = 'style="margin-bottom:24px"'
         return f'<div class="sc" style="justify-content:flex-start;top:330px"><div {a(0.1, mb, "m")}>{e(s["title"])}<em>{e(s["accent"])}</em></div>{items}</div>'
     if ty == "cta":
-        return f'''<div class="sc"><div {a(0.1, "", "k")}>Бесплатно</div><div style="height:30px"></div>
-<div {a(0.3, "", "m")}>Чек-лист <em>«20 причин, почему карточка не продаёт»</em></div>
-<div {a(0.9, 'style="margin-top:40px"', "sub")}>Заберите в нашем Telegram-боте</div>
-<div {a(1.4, "", "cta")}>{BOT}</div></div>'''
+        return f'''<div class="sc"><div {a(0.1, "", "k")}>Telegram-канал</div><div style="height:30px"></div>
+<div {a(0.3, "", "m")}>Больше разборов <em>для селлеров</em></div>
+<div {a(0.9, 'style="margin-top:40px"', "sub")}>Новости маркетплейсов и советы каждый день</div>
+<div {a(1.4, "", "cta")}>Подписывайтесь: {CHANNEL}</div></div>'''
     raise ValueError(ty)
 
 
@@ -63,7 +63,7 @@ def build_html(script):
     body += f'''<div class="sc" style="align-items:flex-start"><img class="a logo" data-in="{t_end + 0.1:.2f}" data-out="99" src="{logo}">
 <div class="a m" data-in="{t_end + 0.3:.2f}" data-out="99" style="margin-top:50px;font-size:84px">Jupiter Agency</div>
 <div class="a sub" data-in="{t_end + 0.5:.2f}" data-out="99" style="margin-top:12px">агентство продвижения на маркетплейсах</div>
-<div class="a ct" data-in="{t_end + 0.8:.2f}" data-out="99" style="margin-top:60px">Telegram <span>@jupitermp</span><br>jupiteragency.ru</div></div>'''
+<div class="a ct" data-in="{t_end + 0.8:.2f}" data-out="99" style="margin-top:60px">Telegram <span>@jupiteragency</span><br>jupiteragency.ru</div></div>'''
     css = open(os.path.join(HERE, "style.css"), encoding="utf-8").read().replace("ASSETS", "file://" + ASSETS)
     js = open(os.path.join(HERE, "anim.js"), encoding="utf-8").read().replace("TOTAL", str(TOTAL))
     return f'<!doctype html><html><head><meta charset="utf-8"><style>{css}</style></head><body><div id="glow"></div><div id="prog"><i></i></div>{body}<script>{js}</script></body></html>'
