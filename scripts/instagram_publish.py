@@ -29,7 +29,11 @@ UA = "JupiterInstagramPublisher/1.0 (+https://jupiteragency.ru)"
 def graph_base():
     # Facebook Login (ключ страницы) — graph.facebook.com.
     # Для Instagram Login можно задать переменную IG_API_HOST=graph.instagram.com.
-    host = os.environ.get("IG_API_HOST", "").strip() or "graph.facebook.com"
+    host = os.environ.get("IG_API_HOST", "").strip()
+    if not host:
+        # ключи входа через Instagram начинаются с IG — им нужен graph.instagram.com
+        token = os.environ.get("IG_ACCESS_TOKEN", "").strip()
+        host = "graph.instagram.com" if token.startswith("IG") else "graph.facebook.com"
     v = os.environ.get("GRAPH_API_VERSION", "").strip() or "v25.0"
     return f"https://{host}/{v}/"
 
