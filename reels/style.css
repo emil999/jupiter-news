@@ -1,0 +1,25 @@
+@font-face{font-family:Onest;font-weight:500;src:url(ASSETS/onest-medium.ttf)}
+@font-face{font-family:Onest;font-weight:700;src:url(ASSETS/onest-bold.ttf)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:1080px;height:1920px;overflow:hidden;background:#111;font-family:Onest;color:#fff}
+#glow{position:absolute;width:1300px;height:1300px;border-radius:50%;background:radial-gradient(circle,#97501f 0%,rgba(151,80,31,.35) 40%,rgba(17,17,17,0) 70%);right:-420px;top:-380px}
+.sc{position:absolute;left:90px;right:150px;top:300px;bottom:420px;display:flex;flex-direction:column;justify-content:center}
+.a{opacity:0;will-change:transform,opacity}
+.k{font:700 34px Onest;letter-spacing:.14em;text-transform:uppercase;color:#e3a072}
+.h{font:700 124px/1.0 Onest;letter-spacing:-.035em}
+.m{font:700 92px/1.04 Onest;letter-spacing:-.03em}
+.h em,.m em{font-style:normal;color:#e3a072}
+.sub{font:500 44px/1.35 Onest;color:rgba(255,255,255,.75)}
+.bars{display:flex;gap:48px;align-items:flex-end;height:760px;margin-top:40px}
+.bar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%}
+.bar i{display:block;border-radius:30px 30px 0 0}
+.bar.x i{background:#3a3a3a}.bar.y i{background:linear-gradient(180deg,#e3a072,#b15f2c)}
+.bar b{font:700 76px Onest;text-align:center;margin-bottom:22px}.bar.x b{color:rgba(255,255,255,.7)}
+.bar small{font:500 34px Onest;color:rgba(255,255,255,.6);text-align:center;margin-top:20px}
+.it{display:flex;gap:28px;align-items:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:30px;padding:34px 36px;margin-top:22px}
+.it b{font:700 40px Onest;color:#e3a072;width:66px;flex-shrink:0}.it span{font:700 44px/1.2 Onest}
+.cta{align-self:flex-start;background:linear-gradient(135deg,#cf8047,#97501f);border-radius:999px;padding:38px 54px;font:700 52px Onest;margin-top:60px}
+.logo{width:200px;height:214px;background:#fff;border-radius:40px;padding:18px;object-fit:contain}
+.ct{font:700 64px/1.35 Onest}.ct span{color:#e3a072}
+#prog{position:absolute;left:90px;right:150px;top:230px;height:6px;background:rgba(255,255,255,.12);border-radius:6px}
+#prog i{display:block;height:100%;width:0;background:#e3a072;border-radius:6px}

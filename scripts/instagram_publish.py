@@ -24,6 +24,7 @@ RAW_URL = "https://raw.githubusercontent.com/{repo}/main/ig/{name}"
 KEEP_IMAGES = 20
 MAX_AGE = timedelta(hours=48)
 UA = "JupiterInstagramPublisher/1.0 (+https://jupiteragency.ru)"
+BOT_CTA = "Бесплатный чек-лист «20 причин, почему карточка не продаёт» — в Telegram-боте @jupiteragency_bot"
 
 
 def graph_base():
@@ -67,6 +68,7 @@ def caption(post):
     src = post.get("source")
     if src and src != "Jupiter Agency":
         text += "\n\nИсточник: " + src
+    text += "\n\n" + BOT_CTA
     text += "\n\nНовости для селлеров каждый день — в Telegram-канале @jupiteragency"
     tags = []
     for t in (post.get("hashtags", "") + " #селлеры #маркетплейсы #jupiteragency").split():

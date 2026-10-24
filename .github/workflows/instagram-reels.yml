@@ -1,0 +1,44 @@
+name: Instagram Reels (weekly)
+
+# Каждую среду в 12:00 по Москве публикует следующий ролик из reels/scripts.json.
+# Ручной запуск: изменить файл .github/instagram-reel-run.
+on:
+  schedule:
+    - cron: "0 9 * * 3"
+  workflow_dispatch:
+  push:
+    paths: [".github/instagram-reel-run"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: instagram
+  cancel-in-progress: false
+
+jobs:
+  reel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install renderer
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg >/dev/null
+          pip install -q playwright
+          python3 -m playwright install --with-deps chromium >/dev/null
+      - name: Render and publish
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_API_HOST: ${{ vars.IG_API_HOST }}
+          GRAPH_API_VERSION: ${{ vars.GRAPH_API_VERSION }}
+        run: python3 scripts/instagram_reel.py
+      - name: Save published list
+        run: |
+          [ -f reels_posted.json ] || exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add reels_posted.json
+          git diff --cached --quiet && exit 0
+          git commit -m "Reels: опубликован очередной ролик"
+          for i in 1 2 3; do git pull --rebase origin main && git push origin main && break; sleep 5; done
