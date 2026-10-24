@@ -2,10 +2,12 @@
 
     python3 reels/render.py <id> <out.mp4>
 
-Нужны: playwright (chromium) и ffmpeg. Видео без звука — музыку можно добавить в Instagram.
+Нужны: playwright (chromium) и ffmpeg. Фоновая музыка генерируется для каждого ролика (reels/music.py), без чужих треков.
 """
 import asyncio, base64, html, json, os, shutil, subprocess, sys, tempfile
 from playwright.async_api import async_playwright
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from music import make_track
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ASSETS = os.path.join(HERE, "assets")
@@ -83,8 +85,10 @@ def render(script_id, out):
     d = tempfile.mkdtemp()
     try:
         asyncio.run(frames(build_html(script), d))
+        wav = os.path.join(d, "music.wav")
+        make_track(script_id, wav, TOTAL)
         subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-framerate", str(FPS), "-i", os.path.join(d, "%04d.jpg"),
-                        "-f", "lavfi", "-i", "anullsrc=channel_layout=stereo:sample_rate=44100", "-shortest",
+                        "-i", wav, "-shortest",
                         "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "20", "-preset", "medium",
                         "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart", out], check=True)
     finally:
