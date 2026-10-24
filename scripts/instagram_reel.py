@@ -5,7 +5,7 @@ Instagram по ссылке raw.githubusercontent.com. Опубликованн�
 Когда все сценарии опубликованы, ничего не делает: нужно добавить новые в reels/scripts.json.
 Ключи в лог не выводятся.
 """
-import json, os, subprocess, sys, time, urllib.parse, urllib.request
+import json, os, shutil, subprocess, sys, time, traceback, urllib.parse, urllib.request
 sys.path.insert(0, os.path.dirname(__file__))
 from instagram_publish import http, graph_base, graph_error, BOT_CTA, UA, RAW_URL, git
 
@@ -31,7 +31,7 @@ def main():
     # видео кладём в репозиторий и отдаём Instagram по ссылке raw.githubusercontent.com
     os.makedirs("ig/reels", exist_ok=True)
     name = nxt["id"] + ".mp4"
-    os.replace(out, os.path.join("ig/reels", name))
+    shutil.move(out, os.path.join("ig/reels", name))
     for old in sorted(os.listdir("ig/reels")):
         if old != name and old.endswith(".mp4"):
             os.remove(os.path.join("ig/reels", old))
@@ -76,4 +76,9 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except Exception as e:  # покажем причину в аннотации запуска (без ключей)
+        print("::error::" + type(e).__name__ + ": " + str(e)[:300])
+        traceback.print_exc()
+        sys.exit(1)
