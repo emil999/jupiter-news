@@ -22,6 +22,7 @@ jobs:
           IG_API_HOST: ${{ vars.IG_API_HOST }}
           GH_TOKEN: ${{ secrets.GH_SECRETS_TOKEN }}
         run: |
+          case "$IG_ACCESS_TOKEN" in IG*) IG_API_HOST=graph.instagram.com;; esac
           if [ "$IG_API_HOST" != "graph.instagram.com" ]; then
             echo "Используется ключ страницы Facebook — он бессрочный, продлевать не нужно."; exit 0
           fi
