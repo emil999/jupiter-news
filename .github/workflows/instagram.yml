@@ -23,7 +23,11 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
+      # ref: main — свежий main, а не коммит на момент запуска: иначе второй
+      # запуск из очереди не видит, что первый уже опубликовал пост, и дублирует его
       - uses: actions/checkout@v4
+        with:
+          ref: main
       - name: Publish next post
         env:
           IG_USER_ID: ${{ secrets.IG_USER_ID }}

@@ -95,6 +95,7 @@ def host_image(post_id, content):
     git("add", "-A", "ig")
     if subprocess.run(["git", "diff", "--cached", "--quiet"]).returncode == 0:
         pushed = True  # такая обложка уже в репозитории (повторная попытка)
+        subprocess.run(["git", "pull", "--rebase", "origin", "main"])  # свежий instagram_posted.json
     else:
         git("commit", "-m", f"Instagram: обложка {post_id}")
         pushed = False
@@ -112,6 +113,38 @@ def host_image(post_id, content):
             return url
         time.sleep(5)
     return url
+
+
+def is_in_posted(post_id):
+    try:
+        return post_id in json.load(open(POSTED, encoding="utf-8"))
+    except Exception:
+        return False
+
+
+def already_published(post, base, ig_user, token):
+    """Страховка от дублей: есть ли среди последних публикаций аккаунта пост
+    с тем же началом подписи. Если Instagram не ответил — не мешаем публикации."""
+    head = caption(post)[:120]
+    status, body = http("GET", f"{base}{ig_user}/media?" + urllib.parse.urlencode(
+        {"fields": "caption", "limit": 10, "access_token": token}))
+    if status != 200:
+        print("Не удалось проверить последние публикации: " + graph_error(body))
+        return False
+    try:
+        captions = [(m.get("caption") or "")[:120] for m in json.loads(body).get("data", [])]
+    except Exception:
+        return False
+    if head in captions:
+        print(f"{post['id']}: такой пост уже есть в Instagram — отмечаю и пропускаю.")
+        posted = json.load(open(POSTED, encoding="utf-8")) if os.path.exists(POSTED) else []
+        if post["id"] not in posted:
+            posted.append(post["id"])
+            with open(POSTED, "w", encoding="utf-8") as f:
+                json.dump(posted[-500:], f, ensure_ascii=False, indent=2)
+                f.write("\n")
+        return True
+    return False
 
 
 def graph_error(body):
@@ -155,9 +188,16 @@ def main():
         print("Нечего публиковать.")
         return 0
 
+    base = graph_base()
+    if already_published(post, base, ig_user, token):
+        return 0
+
     print("Публикую:", post["id"])
     image_url = host_image(post["id"], image)
-    base = graph_base()
+    # host_image подтянул свежий main — вдруг параллельный запуск уже успел
+    if is_in_posted(post["id"]):
+        print(f"{post['id']}: уже опубликован другим запуском — пропускаю.")
+        return 0
     status, body = http("POST", f"{base}{ig_user}/media",
                         {"image_url": image_url, "caption": caption(post), "access_token": token})
     if status != 200:
@@ -184,6 +224,7 @@ def main():
         print("::error::Не удалось опубликовать: " + graph_error(body))
         return 1
 
+    posted = json.load(open(POSTED, encoding="utf-8")) if os.path.exists(POSTED) else []
     posted.append(post["id"])
     posted = posted[-500:]
     with open(POSTED, "w", encoding="utf-8") as f:
