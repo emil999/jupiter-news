@@ -26,7 +26,7 @@ KEEP_IMAGES = 20
 MAX_AGE = timedelta(hours=48)
 UA = "JupiterInstagramPublisher/1.0 (+https://jupiteragency.ru)"
 BOT_CTA = "Больше разборов и новостей для селлеров — подписывайтесь на Telegram-канал @jupiteragency"
-CHINA_CTA = "Хотите закупить такой товар в Китае? Напишите нам в Direct"
+CHINA_CTA = "Хотите закупить такой товар в Китае? Напишите нам «+» в комментарии"
 
 
 def graph_base():
