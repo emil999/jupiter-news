@@ -26,6 +26,7 @@ KEEP_IMAGES = 20
 MAX_AGE = timedelta(hours=48)
 UA = "JupiterInstagramPublisher/1.0 (+https://jupiteragency.ru)"
 BOT_CTA = "Больше разборов и новостей для селлеров — подписывайтесь на Telegram-канал @jupiteragency"
+CHINA_CTA = "Хотите закупить такой товар в Китае? Напишите нам в Direct"
 
 
 def graph_base():
@@ -58,6 +59,10 @@ def safe_id(post_id):
     return re.sub(r"[^A-Za-z0-9_-]", "_", post_id)
 
 
+def is_china(post):
+    return "-china-" in post.get("id", "") or "#товарыизкитая" in post.get("hashtags", "")
+
+
 def caption(post):
     paragraphs = []
     for para in re.split(r"\n\s*\n", post["text"].strip()):
@@ -69,7 +74,8 @@ def caption(post):
     src = post.get("source")
     if src and src != "Jupiter Agency":
         text += "\n\nИсточник: " + src
-    text += "\n\n" + BOT_CTA
+    # посты блока «Товары из Китая» — свой призыв вместо подписки на канал
+    text += "\n\n" + (CHINA_CTA if is_china(post) else BOT_CTA)
     tags = []
     for t in (post.get("hashtags", "") + " #селлеры #маркетплейсы #jupiteragency").split():
         if t not in tags:
