@@ -1,4 +1,4 @@
-"""Публикует следующий пост из queue.json в Instagram через Instagram Graph API.
+"""Публикует следующий пост из queue.json и queue_china.json в Instagram через Instagram Graph API.
 
 Запускается GitHub Action'ом .github/workflows/instagram.yml.
 Картинка — квадратная JPEG-обложка, которую скрипт на хостинге кладёт на сайт
@@ -17,7 +17,8 @@ v25.0) и IG_API_HOST — по желанию.
 import json, os, re, subprocess, sys, time, urllib.error, urllib.parse, urllib.request
 from datetime import datetime, timedelta, timezone
 
-QUEUE = "queue.json"
+# Новости и блок «Товары из Китая»; посты из обеих очередей идут по created_at
+QUEUES = ["queue.json", "queue_china.json"]
 POSTED = "instagram_posted.json"
 COVER_URL = "https://jupiteragency.ru/covers/{id}-square.jpg"
 RAW_URL = "https://raw.githubusercontent.com/{repo}/main/ig/{name}"
@@ -162,7 +163,11 @@ def main():
         print("Секреты IG_USER_ID / IG_ACCESS_TOKEN не заданы — пропускаю.")
         return 0
 
-    queue = json.load(open(QUEUE, encoding="utf-8"))
+    queue = []
+    for name in QUEUES:
+        if os.path.exists(name):
+            queue += json.load(open(name, encoding="utf-8"))
+    queue.sort(key=lambda p: str(p.get("created_at", "")))
     posted = json.load(open(POSTED, encoding="utf-8")) if os.path.exists(POSTED) else []
     now = datetime.now(timezone.utc)
 
