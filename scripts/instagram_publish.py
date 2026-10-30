@@ -24,6 +24,9 @@ COVER_URL = "https://jupiteragency.ru/covers/{id}-square.jpg"
 RAW_URL = "https://raw.githubusercontent.com/{repo}/main/ig/{name}"
 KEEP_IMAGES = 20
 MAX_AGE = timedelta(hours=48)
+# GitHub часто пропускает запуски по расписанию (бывает 2 запуска в день вместо 20),
+# поэтому за один запуск публикуем все накопившиеся посты, но не больше MAX_PER_RUN
+MAX_PER_RUN = 4
 UA = "JupiterInstagramPublisher/1.0 (+https://jupiteragency.ru)"
 BOT_CTA = "Больше разборов и новостей для селлеров — подписывайтесь на Telegram-канал @jupiteragency"
 CHINA_CTA = "Хотите закупить такой товар в Китае? Напишите нам «+» в комментарии"
@@ -162,13 +165,45 @@ def graph_error(body):
         return body[:300]
 
 
+def save_posted(post_id):
+    """Отметить пост в instagram_posted.json и сразу запушить, чтобы следующий
+    пост этого же запуска мог сделать git pull --rebase с чистым деревом."""
+    posted = json.load(open(POSTED, encoding="utf-8")) if os.path.exists(POSTED) else []
+    if post_id not in posted:
+        posted.append(post_id)
+    posted = posted[-500:]
+    with open(POSTED, "w", encoding="utf-8") as f:
+        json.dump(posted, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+    git("add", POSTED)
+    if subprocess.run(["git", "diff", "--cached", "--quiet"]).returncode == 0:
+        return
+    git("commit", "-m", "Instagram: опубликован пост")
+    for _ in range(3):
+        if subprocess.run(["git", "pull", "--rebase", "origin", "main"]).returncode == 0 and \
+           subprocess.run(["git", "push", "origin", "main"]).returncode == 0:
+            return
+        time.sleep(5)
+    print("::warning::Не удалось запушить instagram_posted.json — сохранит следующий шаг Action.")
+
+
 def main():
     ig_user = os.environ.get("IG_USER_ID", "").strip()
     token = os.environ.get("IG_ACCESS_TOKEN", "").strip()
     if not ig_user or not token:
         print("Секреты IG_USER_ID / IG_ACCESS_TOKEN не заданы — пропускаю.")
         return 0
+    done = 0
+    while done < MAX_PER_RUN:
+        result = publish_one(ig_user, token)
+        if result != "published":
+            return 1 if result == "error" and done == 0 else 0
+        done += 1
+    return 0
 
+
+def publish_one(ig_user, token):
+    """Опубликовать самый старый готовый пост. Возвращает published / none / error."""
     queue = []
     for name in QUEUES:
         if os.path.exists(name):
@@ -197,23 +232,25 @@ def main():
 
     if not post:
         print("Нечего публиковать.")
-        return 0
+        return "none"
 
     base = graph_base()
     if already_published(post, base, ig_user, token):
-        return 0
+        # already_published сама дописала id в instagram_posted.json — сохраняем и идём дальше
+        save_posted(post["id"])
+        return "published"
 
     print("Публикую:", post["id"])
     image_url = host_image(post["id"], image)
     # host_image подтянул свежий main — вдруг параллельный запуск уже успел
     if is_in_posted(post["id"]):
         print(f"{post['id']}: уже опубликован другим запуском — пропускаю.")
-        return 0
+        return "none"
     status, body = http("POST", f"{base}{ig_user}/media",
                         {"image_url": image_url, "caption": caption(post), "access_token": token})
     if status != 200:
         print("::error::Не удалось создать публикацию: " + graph_error(body))
-        return 1
+        return "error"
     creation_id = json.loads(body)["id"]
 
     # Instagram скачивает картинку не мгновенно — ждём готовности
@@ -227,22 +264,17 @@ def main():
             break
         if code in ("ERROR", "EXPIRED"):
             print("::error::Instagram не принял картинку: " + str(code))
-            return 1
+            return "error"
 
     status, body = http("POST", f"{base}{ig_user}/media_publish",
                         {"creation_id": creation_id, "access_token": token})
     if status != 200:
         print("::error::Не удалось опубликовать: " + graph_error(body))
-        return 1
+        return "error"
 
-    posted = json.load(open(POSTED, encoding="utf-8")) if os.path.exists(POSTED) else []
-    posted.append(post["id"])
-    posted = posted[-500:]
-    with open(POSTED, "w", encoding="utf-8") as f:
-        json.dump(posted, f, ensure_ascii=False, indent=2)
-        f.write("\n")
+    save_posted(post["id"])
     print("Опубликовано в Instagram:", post["id"])
-    return 0
+    return "published"
 
 
 if __name__ == "__main__":
