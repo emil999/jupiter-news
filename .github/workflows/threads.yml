@@ -1,0 +1,41 @@
+name: Publish to Threads
+
+# Каждый час с 9:07 до 22:07 по Москве публикует пост из threads_queue.json,
+# если наступило его время publish_at. Лишний запуск безопасен.
+on:
+  schedule:
+    - cron: "7 6-19 * * *"
+  workflow_dispatch:
+  push:
+    paths: ["threads_queue.json"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: threads
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Publish due posts
+        env:
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+          THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+          THREADS_API_HOST: ${{ vars.THREADS_API_HOST }}
+        run: python3 scripts/threads_publish.py
+      - name: Save published list
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          [ -f threads_posted.json ] || exit 0
+          git add threads_posted.json
+          git diff --cached --quiet && exit 0
+          git commit -m "Threads: опубликован пост"
+          for i in 1 2 3; do git pull --rebase origin main && git push origin main && break; sleep 5; done

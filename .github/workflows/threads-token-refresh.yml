@@ -1,0 +1,45 @@
+name: Refresh Threads token
+
+# Ключ Threads живет 60 дней. Раз в неделю продлеваем его и записываем в секрет
+# THREADS_ACCESS_TOKEN. Нужен тот же секрет GH_SECRETS_TOKEN, что и для Instagram.
+# Ключи в лог не выводятся.
+on:
+  schedule:
+    - cron: "27 3 * * 1"   # понедельник, 6:27 МСК
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Refresh and save token
+        env:
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_SECRETS_TOKEN }}
+        run: |
+          if [ -z "$THREADS_ACCESS_TOKEN" ] || [ -z "$GH_TOKEN" ]; then
+            echo "Нет секретов THREADS_ACCESS_TOKEN или GH_SECRETS_TOKEN, пропускаю."; exit 0
+          fi
+          python3 - <<'PY'
+          import json, os, sys, urllib.error, urllib.parse, urllib.request
+          url = "https://graph.threads.net/refresh_access_token?" + urllib.parse.urlencode(
+              {"grant_type": "th_refresh_token", "access_token": os.environ["THREADS_ACCESS_TOKEN"]})
+          try:
+              with urllib.request.urlopen(url, timeout=60) as r:
+                  data = json.load(r)
+          except urllib.error.HTTPError as e:
+              print("Threads не продлил ключ:", json.loads(e.read() or b"{}").get("error", {}).get("message", e.code)); sys.exit(1)
+          except Exception as e:
+              print("Ошибка соединения с Threads:", type(e).__name__); sys.exit(1)
+          t = data.get("access_token")
+          if not t:
+              print("В ответе нет нового ключа."); sys.exit(1)
+          open(os.path.join(os.environ["RUNNER_TEMP"], "th_token"), "w").write(t)
+          print("Ключ продлен еще на", int(data.get("expires_in", 0)) // 86400, "дн.")
+          PY
+          gh secret set THREADS_ACCESS_TOKEN -R "$GITHUB_REPOSITORY" < "$RUNNER_TEMP/th_token"
+          rm -f "$RUNNER_TEMP/th_token"
+          echo "Новый ключ сохранен в секрет THREADS_ACCESS_TOKEN."
