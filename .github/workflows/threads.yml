@@ -1,10 +1,10 @@
 name: Publish to Threads
 
-# Каждый час с 9:07 до 22:07 по Москве публикует пост из threads_queue.json,
+# Каждые 30 минут с 9:07 до 22:37 по Москве публикует пост из threads_queue.json,
 # если наступило его время publish_at. Лишний запуск безопасен.
 on:
   schedule:
-    - cron: "7 6-19 * * *"
+    - cron: "7,37 6-19 * * *"
   workflow_dispatch:
   push:
     paths: ["threads_queue.json"]

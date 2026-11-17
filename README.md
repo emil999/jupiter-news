@@ -45,7 +45,7 @@ GitHub Action `.github/workflows/instagram.yml` каждые 30 минут с 9:
 
 ## Threads
 
-План публикаций лежит в `threads_queue.json`. GitHub Action `.github/workflows/threads.yml` каждый час с 9:07 до 22:07 МСК публикует посты, у которых наступило время `publish_at` (по Москве). Пост, опоздавший больше чем на 6 часов, пропускается. Опубликованное отмечается в `threads_posted.json`.
+План публикаций лежит в `threads_queue.json`. GitHub Action `.github/workflows/threads.yml` каждые 30 минут с 9:07 до 22:37 МСК публикует по одному посту, у которого наступило время `publish_at` (по Москве). Слоты: 9:00, 12:00, 15:00, 18:00, 21:00. Пост, опоздавший больше чем на 2 часа, пропускается, чтобы посты не выходили пачкой. Опубликованное отмечается в `threads_posted.json`.
 
 ```json
 {

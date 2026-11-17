@@ -1,6 +1,6 @@
 """Публикует посты из плана threads_queue.json в Threads через Threads API.
 
-Запускается GitHub Action'ом .github/workflows/threads.yml каждый час с 9 до 22 по Москве.
+Запускается GitHub Action'ом .github/workflows/threads.yml каждые 30 минут с 9 до 22 по Москве.
 Публикуется пост, у которого наступило время publish_at (МСК) и который еще не вышел.
 Посты, опоздавшие больше чем на MAX_LATE, пропускаются: GitHub иногда задерживает
 запуски, и старый пост не должен выйти посреди ночи или пачкой.
@@ -22,8 +22,8 @@ from datetime import datetime, timedelta, timezone
 PLAN = "threads_queue.json"
 POSTED = "threads_posted.json"
 MSK = timezone(timedelta(hours=3))
-MAX_LATE = timedelta(hours=6)
-MAX_PER_RUN = 2
+MAX_LATE = timedelta(hours=2)
+MAX_PER_RUN = 1
 LIMIT = 500
 RAW_URL = "https://raw.githubusercontent.com/{repo}/main/{path}"
 
