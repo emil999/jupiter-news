@@ -42,3 +42,21 @@ GitHub Action `.github/workflows/instagram.yml` каждые 30 минут с 9:
 Нужны секреты репозитория `IG_USER_ID` и `IG_ACCESS_TOKEN`. Пока их нет, Action ничего не делает. Ключи в лог не выводятся.
 
 Используется вход через Instagram: переменная репозитория `IG_API_HOST` = `graph.instagram.com`. Такой ключ живёт 60 дней, поэтому `.github/workflows/instagram-token-refresh.yml` каждый понедельник продлевает его и записывает в `IG_ACCESS_TOKEN`. Для этого нужен секрет `GH_SECRETS_TOKEN` — fine-grained токен GitHub с правом «Secrets: Read and write» только на этот репозиторий. Если вместо этого использовать ключ страницы Facebook (переменная `IG_API_HOST` не задана), он бессрочный и продление не нужно.
+
+## Threads
+
+План публикаций лежит в `threads_queue.json`. GitHub Action `.github/workflows/threads.yml` каждый час с 9:07 до 22:07 МСК публикует посты, у которых наступило время `publish_at` (по Москве). Пост, опоздавший больше чем на 6 часов, пропускается. Опубликованное отмечается в `threads_posted.json`.
+
+```json
+{
+  "id": "2026-11-21-keys-odezhda",
+  "publish_at": "2026-11-21 12:00",
+  "text": "Текст до 500 символов",
+  "image": "threads/img/keys-odezhda.jpg",
+  "replies": ["Ответ под постом, тоже до 500 символов"]
+}
+```
+
+`image` и `replies` по желанию. Картинка берется из этого репозитория (папка `threads/img/`), потому что серверы Meta могут не достучаться до российского хостинга. Чтобы снять пост, удалите его из плана; чтобы перенести, поменяйте `publish_at`. При каждом изменении плана Action проверяет длину текстов и наличие картинок.
+
+Нужен секрет `THREADS_ACCESS_TOKEN` (`THREADS_USER_ID` по желанию). Пока его нет, Action ничего не делает. Ключ живет 60 дней, `.github/workflows/threads-token-refresh.yml` продлевает его каждый понедельник через тот же `GH_SECRETS_TOKEN`, что и для Instagram.
